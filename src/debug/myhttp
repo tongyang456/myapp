@@ -1,0 +1,40 @@
+#!/bin/sh
+
+WHOAMI=`whoami`
+
+PID=`ps -u $WHOAMI | grep myapp | awk '{print $1}'`
+
+if (test "$#" = 0) then
+	echo "Usage: $0 [stop] [start] [status]"
+	exit 0
+fi
+
+if (test "$1" = "start") then
+	if (test "$PID" = "") then
+		#valgrind --tool=memcheck --leak-check=full --show-reachable=yes --trace-children=yes ./bin/myapp 1229
+		./bin/myapp 1229
+	else
+		echo "myapp is running"
+	fi
+	exit 0
+fi
+
+if (test "$1" = "stop") then
+	if (test "$PID" != "") then
+		kill -9 $PID
+	fi
+	exit 0
+fi
+
+if (test "$1" = "status") then
+	if (test "$PID" = "") then
+		echo "myapp is not run"
+	else
+		echo "myapp is running"
+	fi
+	exit 0
+fi
+
+echo "Usage: $0 [stop] [start] [status]"
+
+
